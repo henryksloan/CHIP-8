@@ -19,8 +19,7 @@ void Chip8::init() {
         memory[i] = chip8_fontset[i];
 }
 
-void Chip8::load_program(std::string filename) {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+void Chip8::load_program(std::ifstream &file) {
     char buffer[buffer_size]  = { 0 };
     file.read(buffer, buffer_size);
     for(int i = 0; i < buffer_size; ++i)

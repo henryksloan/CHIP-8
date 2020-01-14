@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 
 const int WINDOW_WIDTH = 840;
 const int WINDOW_HEIGHT = 520;
@@ -21,15 +22,24 @@ int main(int argc, char **argv) {
 
     Disassembler disas;
 
-    chip8.load_program(argv[1]);
-    disas.disassemble(argv[1]);
+    std::ifstream file(argv[1], std::ifstream::binary);
+    if (!file) {
+        std::cerr << "Could not open file " << argv[1] << '\n';
+        std::cout << "Usage: " << argv[0] << " <binary file>\n";
+        return -1;
+    }
+
+    chip8.load_program(file);
+    file.clear();
+    file.seekg(0, std::ios::beg);
+    disas.disassemble(file);
     std::vector<std::string> instr = disas.get_instructions();
 
     bool quit = false;
     SDL_Event event;
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
-    TTF_Font *font = TTF_OpenFont("pixelmix.ttf", TEXT_SIZE);
+    TTF_Font *font = TTF_OpenFont("../assets/pixelmix.ttf", TEXT_SIZE);
     SDL_Window *window = SDL_CreateWindow("Chip8 Emulator",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);

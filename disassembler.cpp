@@ -1,8 +1,6 @@
 #include "disassembler.h"
 
-void Disassembler::disassemble(std::string filename) {
-    std::ifstream file(filename, std::ifstream::binary);
-    file.seekg(0, std::ios::beg);
+void Disassembler::disassemble(std::ifstream &file) {
     char a, b;
     unsigned short instr;
     std::string opcode;
