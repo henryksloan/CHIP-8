@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     if (!file) {
         std::cerr << "Could not open file " << argv[1] << '\n';
         std::cout << "Usage: " << argv[0] << " <binary file>\n";
-        return -1;
+        return 1;
     }
 
     chip8.load_program(file);
@@ -37,9 +37,23 @@ int main(int argc, char **argv) {
 
     bool quit = false;
     SDL_Event event;
-    SDL_Init(SDL_INIT_VIDEO);
-    TTF_Init();
+
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        SDL_Log("Unable to initialize SDL2: %s", SDL_GetError());
+        return 1;
+    }
+    	
+    if (TTF_Init() != 0) {
+        printf("Unable to initialize SDL2_ttf: %s\n", TTF_GetError());
+        return 1;
+    }
+
     TTF_Font *font = TTF_OpenFont("../assets/pixelmix.ttf", TEXT_SIZE);
+    if (!font) {
+        printf("Unable to open TTF_OpenFont: %s\n", TTF_GetError());
+        return 1;
+    }
+
     SDL_Window *window = SDL_CreateWindow("Chip8 Emulator",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -91,7 +105,6 @@ int main(int argc, char **argv) {
         int n = prev;
         int p = chip8.get_pc();
         if (((p > n) && ((p-n) > 30)) || ((p < n) && ((n-p) > 1))) n = chip8.get_pc();
-        // std::cout << n << std::endl;
         int prog_start = (n-512)/2 - 1;
         if (prog_start < 0) prog_start = 0;
         int prog_end = prog_start+32;
@@ -100,7 +113,6 @@ int main(int argc, char **argv) {
             ss = std::stringstream();
             ss << std::hex << std::uppercase << std::setw(4) << std::setfill('0')
                << (prog_start+i)*2 << std::dec << ": " << instr[prog_start+i];
-            // if ((chip8.get_pc()-512)/2 == prog_start+i) ss << 'F';
             dstrect = { SCREEN_WIDTH+8, GAP_SIZE*i + 6*i, texW, texH };
             SDL_Color text_color = { 255, 255, 255 };
             if ((chip8.get_pc()-512)/2 == prog_start+i) {
@@ -179,30 +191,6 @@ int main(int argc, char **argv) {
         SDL_RenderCopy(renderer, texture, NULL, &dstrect);
         SDL_DestroyTexture(texture);
         SDL_FreeSurface(surface);
-
-        /* std::array<unsigned short, 16> stack = chip8.get_stack();
-        for (int i = 0; i < ((chip8.get_sp() <= 9) ? chip8.get_sp() : 9); i++) {
-            ss = std::stringstream();
-            ss << std::hex << std::uppercase << i
-                << std::dec << std::nouppercase << ": "
-                << std::hex << std::setw(2) << std::setfill('0') << +stack[i] << std::dec;
-            surface = TTF_RenderText_Solid(font, ss.str().c_str(), { 255, 255, 255 });
-            texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-            dstrect = { SCREEN_WIDTH+100, (TEXT_SIZE*8+16) + TEXT_SIZE*i + (8*i), texW, texH };
-            SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-            SDL_DestroyTexture(texture);
-            SDL_FreeSurface(surface);
-        }
-        if (chip8.get_sp() > 9) {
-            surface = TTF_RenderText_Solid(font, "...", { 255, 255, 255 });
-            texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-            dstrect = { SCREEN_WIDTH+100, (TEXT_SIZE*8+16) + TEXT_SIZE*10 + (8*10), texW, texH };
-            SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-            SDL_DestroyTexture(texture);
-            SDL_FreeSurface(surface);
-        } */
 
         SDL_RenderPresent(renderer);
         prev = n;
