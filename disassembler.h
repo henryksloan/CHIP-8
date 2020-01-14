@@ -9,7 +9,7 @@
 
 class Disassembler {
  public:
-    void disassemble(std::string filename);
+    void disassemble(std::ifstream &file);
     std::vector<std::string> get_instructions() { return instructions; }
 
  private:

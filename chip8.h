@@ -14,7 +14,7 @@ const int buffer_size = 4096-512;
 class Chip8 {
  public:
     void init();
-    void load_program(std::string filename);
+    void load_program(std::ifstream &file);
     void step();
 
     void set_key(std::array<unsigned char, 16> key) { this->key = key; }
