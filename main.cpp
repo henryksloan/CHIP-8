@@ -69,17 +69,26 @@ int main(int argc, char **argv) {
     int start = SDL_GetTicks();
     while (!quit) {
         start = SDL_GetTicks();
+
         while(SDL_PollEvent(&event) != 0) {
             if(event.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
+        // set_key list is in numerical order 0x0..0xF
+        // Keys correspond to 
+        /*
+         * 1 2 3 C | 1 2 3 4
+         * 4 5 6 D | Q W E R
+         * 7 8 9 E | A S D F
+         * A 0 B F | Z X C V
+         */
         Uint8* k = (Uint8*) SDL_GetKeyboardState(NULL);
-        chip8.set_key({k[SDL_SCANCODE_1], k[SDL_SCANCODE_2], k[SDL_SCANCODE_3], k[SDL_SCANCODE_4],
-                       k[SDL_SCANCODE_Q], k[SDL_SCANCODE_W], k[SDL_SCANCODE_E], k[SDL_SCANCODE_R],
-                       k[SDL_SCANCODE_A], k[SDL_SCANCODE_S], k[SDL_SCANCODE_D], k[SDL_SCANCODE_F],
-                       k[SDL_SCANCODE_Z], k[SDL_SCANCODE_X], k[SDL_SCANCODE_C], k[SDL_SCANCODE_V]});
+        chip8.set_key({k[SDL_SCANCODE_X], k[SDL_SCANCODE_1], k[SDL_SCANCODE_2], k[SDL_SCANCODE_3],
+                       k[SDL_SCANCODE_Q], k[SDL_SCANCODE_W], k[SDL_SCANCODE_E], k[SDL_SCANCODE_A],
+                       k[SDL_SCANCODE_S], k[SDL_SCANCODE_D], k[SDL_SCANCODE_Z], k[SDL_SCANCODE_C],
+                       k[SDL_SCANCODE_4], k[SDL_SCANCODE_R], k[SDL_SCANCODE_F], k[SDL_SCANCODE_V]});
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
         SDL_RenderClear(renderer);
@@ -198,10 +207,10 @@ int main(int argc, char **argv) {
         prev = n;
         chip8.step();
 
-        /* int frame_ticks = SDL_GetTicks();
+        int frame_ticks = SDL_GetTicks();
         if((1000/FRAMES_PER_SECOND) > (frame_ticks - start)) {
             SDL_Delay((1000/FRAMES_PER_SECOND) - (frame_ticks - start));
-        } */
+        }
     }
 
     SDL_DestroyWindow(window);

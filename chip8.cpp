@@ -7,12 +7,14 @@ void Chip8::init() {
     I = 0;
     pc = 0x200;
     sp = 0;
+    reg_awaiting_key = -1;
 
     memory.fill(0);
     V.fill(0);
     gfx.fill(0);
     stack.fill(0);
     key.fill(0);
+    saved_key = key;
 
     // Load fontset
     for(int i = 0; i < 80; ++i)
@@ -27,6 +29,22 @@ void Chip8::load_program(std::ifstream &file) {
 }
 
 void Chip8::step() {
+    if (reg_awaiting_key != -1) {
+        if (key == saved_key) {
+            return;
+        }
+        else {
+            for (int i = 0; i < key.size(); i++) {
+                if (key[i] != saved_key[i]) {
+                    V[reg_awaiting_key] = i;
+                    reg_awaiting_key = -1;
+                    pc += 2;
+                    break;
+                }
+            }
+        }
+    }
+
     opcode = memory[pc] << 8 | memory[pc+1];
 
     short suff;
@@ -139,6 +157,8 @@ void Chip8::step() {
             break;
         case 0xD000:
             // Draw a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels
+            // TODO: Investigate crash
+            // To reproduce, try game of life by GV Samways
             /*V[0xF] = 0;
             for (int row = 0; row < (opcode & 0x000F); row++) {
                 for (int col = 0; col < 8; col++) {
@@ -192,7 +212,9 @@ void Chip8::step() {
                     break;
                 case 0x000A:
                     // Await a keypress (blocking), and then store it in VX
-                    // TODO
+                    // PC is frozen until send_key is called
+                    reg_awaiting_key = ((opcode & 0x0F00) >> 8);
+                    saved_key = key;
                     break;
                 case 0x0015:
                     // Set the delay timer to VX
