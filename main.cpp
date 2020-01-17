@@ -108,20 +108,22 @@ int main(int argc, char **argv) {
         int prog_start = (n-512)/2 - 1;
         if (prog_start < 0) prog_start = 0;
         int prog_end = prog_start+32;
+        bool curr;
         if (prog_end > instr.size()) prog_end = instr.size()-prog_start;
         for (int i = 0; i < prog_end-prog_start; i++) {
+            curr = ((chip8.get_pc()-512)/2 == prog_start+i);
             ss = std::stringstream();
             ss << std::hex << std::uppercase << std::setw(4) << std::setfill('0')
                << (prog_start+i)*2 << std::dec << ": " << instr[prog_start+i];
-            dstrect = { SCREEN_WIDTH+8, GAP_SIZE*i + 6*i, texW, texH };
             SDL_Color text_color = { 255, 255, 255 };
-            if ((chip8.get_pc()-512)/2 == prog_start+i) {
-                SDL_RenderFillRect(renderer, &dstrect);
-                text_color = {0, 0, 0};
-            }
+            if (curr) text_color = {0, 0, 0};
             surface = TTF_RenderText_Solid(font, ss.str().c_str(), text_color);
             texture = SDL_CreateTextureFromSurface(renderer, surface);
             SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
+            dstrect = { SCREEN_WIDTH+8, GAP_SIZE*i + 6*i, texW, texH };
+            if (curr) {
+                SDL_RenderFillRect(renderer, &dstrect);
+            }
             SDL_RenderCopy(renderer, texture, NULL, &dstrect);
             SDL_DestroyTexture(texture);
             SDL_FreeSurface(surface);
