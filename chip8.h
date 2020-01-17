@@ -47,6 +47,8 @@ class Chip8 {
     unsigned short sp;
 
     std::array<unsigned char, 16> key;
+    std::array<unsigned char, 16> saved_key;
+    int reg_awaiting_key; // -1 by default, otherwise VX awaits keypress
 
     const std::array<unsigned char, 80> chip8_fontset =
         { {
