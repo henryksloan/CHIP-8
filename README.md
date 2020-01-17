@@ -1,6 +1,8 @@
 # CHIP-8
 A  CHIP-8 emulator in C++, with a debug interface made with SDL
 
+<img src="/screenshots/CHIP8.png" width="600">
+
 ## Compiling and running
 Requires cmake, SDL2 and SDL2_ttf
 
