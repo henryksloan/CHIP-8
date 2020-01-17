@@ -45,9 +45,7 @@ void Chip8::step() {
                     sp--;
                     break;
                 default:
-                    // Call RCA 1802 program at address NNN
-                    // TODO
-                    // pc += 2;
+                    // Could be SYS instruction, but treating as NOP
                     break;
             }
             break;
