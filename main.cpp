@@ -207,10 +207,10 @@ int main(int argc, char **argv) {
         prev = n;
         chip8.step();
 
-        int frame_ticks = SDL_GetTicks();
+        /* int frame_ticks = SDL_GetTicks();
         if((1000/FRAMES_PER_SECOND) > (frame_ticks - start)) {
             SDL_Delay((1000/FRAMES_PER_SECOND) - (frame_ticks - start));
-        }
+        } */
     }
 
     SDL_DestroyWindow(window);

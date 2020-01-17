@@ -180,9 +180,11 @@ void Chip8::step() {
                 {
                 if((pixel & (0x80 >> xline)) != 0)
                 {
-                    if(gfx[(x + xline + ((y + yline) * 64))] == 1)
-                    V[0xF] = 1;                                 
-                    gfx[x + xline + ((y + yline) * 64)] ^= 1;
+                    int index = x + xline + ((y + yline) * 64);
+                    if(index < gfx.size()) {
+                        if (gfx[index] == 1) V[0xF] = 1;                                 
+                        gfx[index] ^= 1;
+                    }
                 }
                 }
             }
