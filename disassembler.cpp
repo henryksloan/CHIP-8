@@ -23,8 +23,8 @@ void Disassembler::disassemble(std::ifstream &file) {
                         args = "";
                         break;
                     default:
-                        opcode = "SYS";
-                        args = "n";
+                        opcode = "";
+                        args = "";
                         break;
                 }
                 break;
