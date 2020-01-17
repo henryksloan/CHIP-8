@@ -18,6 +18,7 @@ class Chip8 {
     void step();
 
     void set_key(std::array<unsigned char, 16> key) { this->key = key; }
+    bool is_awaiting_key() { return (reg_awaiting_key != -1);}
 
     std::array<unsigned char, 4096> get_memory() { return memory; }
     std::array<unsigned char, 16> get_V() { return V; }
