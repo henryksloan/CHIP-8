@@ -21,6 +21,7 @@ Ensure that ../assets/pixelmix.ttf exists
 
 ## Resources and references
 - Font from https://www.dafont.com/pixelmix.font
+- ROMs combiled by Revival Studios (Information in roms folder README)
 - Some of Readme and CMakeLists.txt from https://github.com/JamesGriffin/CHIP-8-Emulator
 - Architecture documentation from https://github.com/trapexit/chip-8_documentation
 - And also from https://en.wikipedia.org/wiki/CHIP-8#Virtual_machine_description

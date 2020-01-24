@@ -65,7 +65,6 @@ int main(int argc, char **argv) {
     int texW = 0;
     int texH = 0;
     int prev = chip8.get_pc();
-    int slow_timer = 0;
 
     int start = SDL_GetTicks();
     while (!quit) {
@@ -76,11 +75,6 @@ int main(int argc, char **argv) {
                 quit = true;
             }
         }
-
-        if (chip8.is_awaiting_key()) slow_timer = 2;
-        else if (slow_timer > 0) slow_timer--;
-        
-        if (slow_timer != 2 && slow_timer != 0) SDL_Delay(75); 
 
         // set_key list is in numerical order 0x0..0xF
         // Keys correspond to 
